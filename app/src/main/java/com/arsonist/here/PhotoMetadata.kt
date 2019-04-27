@@ -7,7 +7,7 @@ import android.provider.MediaStore
 
 data class PhotoMetadata(
     val id: Long,
-    val data: Long,
+    val data: String,
     val dateTaken: Long,
     val location: Location
 ) {
@@ -23,7 +23,7 @@ data class PhotoMetadata(
 
             return PhotoMetadata(
                 id = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)),
-                data = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA)),
+                data = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA)),
                 dateTaken = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATE_TAKEN)),
                 location = location
             )

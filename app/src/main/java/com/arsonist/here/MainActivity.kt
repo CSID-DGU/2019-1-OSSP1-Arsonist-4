@@ -8,7 +8,11 @@ import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.widget.Toast
+import com.arsonist.here.Views.PhotoRecyclerViewAdapter
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val photoMetadataList = mutableListOf<PhotoMetadata>()
+    private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter()
+    private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(this, 3) }
 
     private fun fetchPhotoMetadataList() {
         val cursor = contentResolver.query(
@@ -44,11 +50,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        Log.d("FETCH", "size :  ${cursor?.count}")
+        mainRecyclerViewAdapter.reloadPhotos(photoMetadataList)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mainRecyclerView.adapter = mainRecyclerViewAdapter
+        mainRecyclerView.layoutManager = mainRecyclerViewLayoutManager
 
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -70,6 +82,7 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             // 사진을 불러오는 코드 작성
+            fetchPhotoMetadataList()
         }
     }
 
@@ -83,6 +96,7 @@ class MainActivity : AppCompatActivity() {
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
                 // 사진을 불러오는 코드 작성
+                fetchPhotoMetadataList()
             }
         }
     }
