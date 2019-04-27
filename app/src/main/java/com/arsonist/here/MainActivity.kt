@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.widget.Toast
 import com.arsonist.here.Views.PhotoRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter()
     private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(this, 3) }
 
-    private fun fetchPhotoMetadataList() {
+    private fun startToFetchPhoto() {
         val cursor = contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
@@ -40,19 +39,13 @@ class MainActivity : AppCompatActivity() {
             "${MediaStore.Images.ImageColumns.DATE_TAKEN} DESC"
         )
 
-        with(cursor) {
-            cursor?.let {
-                if (cursor.moveToFirst()) {
-                    photoMetadataList.add(PhotoMetadata.photoMetadataFromCursor(it))
-                }
-                while (cursor.moveToNext()) {
-                    photoMetadataList.add(PhotoMetadata.photoMetadataFromCursor(it))
-                }
+        cursor?.let {
+            val asyncTask = FetchPhotoAsyncTask(it) { photoMetadata ->
+                photoMetadataList.add(photoMetadata)
+                mainRecyclerViewAdapter.addPhoto(photoMetadata)
             }
+            asyncTask.execute()
         }
-
-        Log.d("FETCH", "size :  ${cursor?.count}")
-        mainRecyclerViewAdapter.reloadPhotos(photoMetadataList)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +75,7 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             // 사진을 불러오는 코드 작성
-            fetchPhotoMetadataList()
+            startToFetchPhoto()
         }
     }
 
@@ -96,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
                 // 사진을 불러오는 코드 작성
-                fetchPhotoMetadataList()
+                startToFetchPhoto()
             }
         }
     }

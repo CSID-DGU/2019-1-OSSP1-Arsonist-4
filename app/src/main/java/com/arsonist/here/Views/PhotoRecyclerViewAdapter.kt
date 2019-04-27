@@ -24,11 +24,11 @@ class PhotoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
 class PhotoRecyclerViewAdapter: RecyclerView.Adapter<PhotoViewHolder>(){
 
-    var photoMetadataList = listOf<PhotoMetadata>()
+    private val photoMetadataList = mutableListOf<PhotoMetadata>()
 
-    fun reloadPhotos(photoMetadataList: List<PhotoMetadata>){
-        this.photoMetadataList = photoMetadataList
-        notifyDataSetChanged()
+    fun addPhoto(photoMetadata: PhotoMetadata) {
+        photoMetadataList.add(photoMetadata)
+        notifyItemInserted(photoMetadataList.size - 1)
     }
     override fun getItemCount() = photoMetadataList.size
 
