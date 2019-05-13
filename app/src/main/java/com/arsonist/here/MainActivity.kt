@@ -1,60 +1,35 @@
 package com.arsonist.here
 
 import android.Manifest
+import android.app.Activity
+import android.app.PendingIntent.getActivity
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.BaseColumns
-import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import com.arsonist.here.Views.PhotoRecyclerViewAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager.widget.PagerAdapter
+import com.arsonist.here.adapters.MainAdapter
+import com.arsonist.here.fragments.GalleryFragment
+import com.arsonist.here.fragments.MapFragment
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        const val REQUEST_CODE_READ_EXTERNAL_STORAGE = 1
-    }
-
-    private val photoMetadataList = mutableListOf<PhotoMetadata>()
-
-    private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter()
-    private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(this, 5) }
-
-    private fun startToFetchPhoto() {
-        val cursor = contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            arrayOf(
-                // ID : 가져오는 사진의 UNIQUE한 ID
-                BaseColumns._ID,
-                MediaStore.Images.ImageColumns.DATA, // 파일 경로
-                MediaStore.Images.ImageColumns.DATE_TAKEN, // 찍은 날짜
-                MediaStore.Images.ImageColumns.LATITUDE, // 위치
-                MediaStore.Images.ImageColumns.LONGITUDE
-            ),
-            null,
-            null,
-            "${MediaStore.Images.ImageColumns.DATE_TAKEN} DESC"
-        )
-
-        cursor?.let {
-            val asyncTask = FetchPhotoAsyncTask(it) { photoMetadata ->
-                photoMetadataList.add(photoMetadata)
-                mainRecyclerViewAdapter.addPhoto(photoMetadata)
-            }
-            asyncTask.execute()
-        }
+        private const val VIEWPAGER_COUNT = 2
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        mainRecyclerView.adapter = mainRecyclerViewAdapter
-        mainRecyclerView.layoutManager = mainRecyclerViewLayoutManager
 
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -71,27 +46,57 @@ class MainActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    REQUEST_CODE_READ_EXTERNAL_STORAGE
+                    GalleryFragment.REQUEST_CODE_READ_EXTERNAL_STORAGE
                 )
             }
         } else {
             // 사진을 불러오는 코드 작성
-            startToFetchPhoto()
+            //startToFetchPhoto()
+            view_pager.adapter = ViewPagerAdapter(supportFragmentManager,this)
         }
+
+
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == REQUEST_CODE_READ_EXTERNAL_STORAGE) {
+        if (requestCode == GalleryFragment.REQUEST_CODE_READ_EXTERNAL_STORAGE) {
             if (grantResults.isNotEmpty()
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
                 // 사진을 불러오는 코드 작성
-                startToFetchPhoto()
+                //startToFetchPhoto()
+                view_pager.adapter = ViewPagerAdapter(supportFragmentManager,this)
             }
+        }
+    }
+
+    private class ViewPagerAdapter internal  constructor(fm: FragmentManager?, val mContext: Context?) : FragmentPagerAdapter(fm) {
+        //internal ViewPagerAdapter class, with 2 fragments.
+
+        override fun getItem(position: Int): Fragment? {
+            lateinit var fragment : Fragment
+            when (position){
+                0 -> fragment = GalleryFragment()
+                1 -> fragment = MapFragment()
+            }
+            return fragment
+        }
+
+        override fun getCount(): Int {
+            return VIEWPAGER_COUNT
+        }
+        // for the pageTitleStrip View at the top of the viewpager
+        override fun getPageTitle(position: Int): CharSequence? {
+            when(position){
+                0 -> return  mContext?.resources?.getString(R.string.gallery_fragment)
+                1 -> return  mContext?.resources?.getString(R.string.map_fragment)
+            }
+            return ""
         }
     }
 }

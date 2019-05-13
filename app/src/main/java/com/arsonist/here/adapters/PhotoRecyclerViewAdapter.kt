@@ -1,4 +1,4 @@
-package com.arsonist.here.Views
+package com.arsonist.here.adapters
 
 import android.view.LayoutInflater
 import android.view.View

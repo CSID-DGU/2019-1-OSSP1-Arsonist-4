@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".MainActivity">
 
-    <com.l4digital.fastscroll.FastScrollRecyclerView
-            android:id="@+id/mainRecyclerView"
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:bubbleColor="#00bb00"
-            app:bubbleTextColor="#ffffff"
-            app:handleColor="#999999"
-    />
+            android:layout_height="match_parent">
+        <androidx.viewpager.widget.PagerTitleStrip
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/tealLight"
+                android:id="@+id/pager_header"
+                style="@style/PagerTitleStripStyle"
+                android:padding="12dp">
+        </androidx.viewpager.widget.PagerTitleStrip>
+    </androidx.viewpager.widget.ViewPager>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
