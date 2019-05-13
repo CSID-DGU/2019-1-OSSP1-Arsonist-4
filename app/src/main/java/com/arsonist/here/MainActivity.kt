@@ -5,11 +5,11 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.MediaStore
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import com.arsonist.here.Views.PhotoRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,8 +20,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val photoMetadataList = mutableListOf<PhotoMetadata>()
+
     private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter()
-    private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(this, 3) }
+    private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(this, 5) }
 
     private fun startToFetchPhoto() {
         val cursor = contentResolver.query(
