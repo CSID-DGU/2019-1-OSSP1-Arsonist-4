@@ -8,4 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="PagerTitleStripStyle">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ContactsPopupTextViewStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/contacts_popup_text_size</item>
+        <item name="android:textColor">@android:color/white</item>
+
+    </style>
+
 </resources>
