@@ -1,24 +1,18 @@
 package com.arsonist.here.fragments
 
-import android.Manifest
-import android.app.Activity
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arsonist.here.FetchPhotoAsyncTask
 import com.arsonist.here.PhotoMetadata
 import com.arsonist.here.R
 import com.arsonist.here.adapters.PhotoRecyclerViewAdapter
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
 class GalleryFragment : Fragment() {
@@ -33,6 +27,7 @@ class GalleryFragment : Fragment() {
     private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(activity, 5) }
 
     private fun startToFetchPhoto() {
+        val tempLocation: LatLng
         val cursor = context!!.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
