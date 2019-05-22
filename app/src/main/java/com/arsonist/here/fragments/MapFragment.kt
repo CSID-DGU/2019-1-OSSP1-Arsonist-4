@@ -31,7 +31,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapView = rootView.findViewById(R.id.mapview) as MapView
-        if(mapView !=null){
+        if (mapView != null) {
             mapView.onCreate(null)
             mapView.onResume()
             mapView.getMapAsync(this)
