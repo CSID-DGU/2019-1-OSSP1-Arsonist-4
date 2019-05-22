@@ -25,18 +25,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.fragment_map,container,false)
+        mapView = rootView.findViewById(R.id.mapview) as MapView
+        mapView.getMapAsync(this)
         return rootView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        mapView = rootView.findViewById(R.id.mapview) as MapView
-        if (mapView != null) {
-            mapView.onCreate(null)
-            mapView.onResume()
-            mapView.getMapAsync(this)
-        }
-    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mapView.onCreate(savedInstanceState)
@@ -84,6 +77,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         markerOptions.position(SEOUL)
         markerOptions.title("서울")
         markerOptions.snippet("수도")
+        googleMap.addMarker(markerOptions)
+        val Busan = LatLng(35.17, 129.07)
+        markerOptions.position(Busan)
+        markerOptions.title("부산")
+        markerOptions.snippet("해운대")
         googleMap.addMarker(markerOptions)
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL))
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(13F))
