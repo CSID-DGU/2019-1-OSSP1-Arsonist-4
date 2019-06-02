@@ -6,6 +6,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arsonist.here.FetchPhotoAsyncTask
@@ -23,7 +24,14 @@ class GalleryFragment : Fragment() {
 
     private val photoMetadataList = mutableListOf<PhotoMetadata>()
 
-    private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter()
+    private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter(this) { photoMetadata ->
+        // 눌렀을때 처리
+        Toast.makeText(
+            context,
+            "${photoMetadata.location.latitude}, ${photoMetadata.location.longitude}",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
     private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(activity, 5) }
 
     private fun startToFetchPhoto() {
