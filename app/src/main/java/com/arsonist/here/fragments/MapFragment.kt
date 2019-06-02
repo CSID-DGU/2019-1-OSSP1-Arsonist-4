@@ -84,6 +84,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         markerOptions.snippet("해운대")
         googleMap.addMarker(markerOptions)
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL))
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(13F))
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(5F))
     }
 }
