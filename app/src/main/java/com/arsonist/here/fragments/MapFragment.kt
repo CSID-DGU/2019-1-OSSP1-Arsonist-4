@@ -1,9 +1,8 @@
 package com.arsonist.here.fragments
 
-import android.content.Context
-import android.net.Uri
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import com.arsonist.here.adapters.PopupAdapter
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterManager
+import java.util.*
 
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -96,27 +96,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     }
 
-    private fun getRealPathFromURI(contentURI: Uri, context: Context): String {
-        val result: String
-        val cursor = context.contentResolver.query(contentURI, null, null, null, null)
-        if (cursor == null) {
-            result = contentURI.path
-        } else {
-            cursor.moveToFirst()
-            val idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-            result = cursor.getString(idx)
-            cursor.close()
-        }
-        return result
-    }
-
     private fun addPlaceItems() {
-        val args = Bundle()
-        //var photoInfo = args?.getSerializable("photoInfo") as PhotoMetadata
-
-        //Log.d("test", photoInfo.data.toString())
-        //mClusterManager!!.addItem(Place(photoInfo.location.latitude, photoInfo.location.longitude))
-
         var photoList = PhotoMetadataList.photoMetadataList
         for (i in 0 until photoList.size) {
             val contentURI = photoList[i].data
@@ -128,7 +108,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             if (photoList[i].location.latitude != 0.0 && photoList[i].location.longitude != 0.0) {
 
-                //val bitmap = MediaStore.Images.Media.getBitmap(context!!.contentResolver, Uri)
+                // val bitmap = MediaStore.Images.Media.getBitmap(context!!.contentResolver, Uri)
 
                 mClusterManager!!.addItem(
                     Place(
@@ -157,20 +137,57 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         addPlaceItems()
 
+        val geocode: Geocoder = Geocoder(context, Locale.getDefault())
+        var addresses: List<Address>
 
         mClusterManager!!.setOnClusterClickListener(
             ClusterManager.OnClusterClickListener<Place> {
-                Toast.makeText(context, "Cluster click", Toast.LENGTH_SHORT).show()
+
+                addresses = geocode.getFromLocation(
+                    it.position.latitude,
+                    it.position.longitude,
+                    1
+                ) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                val address =
+                    addresses[0].getAddressLine(0) // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                val city = addresses[0].getLocality() // 구
+                val state = addresses[0].getAdminArea() // 시
+                val country = addresses[0].getCountryName() // 나라
+                val postalCode = addresses[0].getPostalCode() // 우편 번호
+                val knownName = addresses[0].getFeatureName() // 지번
+
+                // if true, click handling stops here and do not show info view, do not move camera
+                // you can avoid this by calling:
+                // renderer.getMarker(clusterItem).showInfoWindow();
+
+                Toast.makeText(context, address, Toast.LENGTH_SHORT).show()
+
                 false
             })
 
         mClusterManager!!.setOnClusterItemClickListener(
             ClusterManager.OnClusterItemClickListener<Place> {
-                Toast.makeText(context, "Cluster item click", Toast.LENGTH_SHORT).show()
+
+                addresses = geocode.getFromLocation(
+                    it.lat,
+                    it.lng,
+                    1
+                ) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                val address =
+                    addresses[0].getAddressLine(0) // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                val city = addresses[0].getLocality() // 구
+                val state = addresses[0].getAdminArea() // 시
+                val country = addresses[0].getCountryName() // 나라
+                val postalCode = addresses[0].getPostalCode() // 우편 번호
+                val knownName = addresses[0].getFeatureName() // 지번
 
                 // if true, click handling stops here and do not show info view, do not move camera
                 // you can avoid this by calling:
                 // renderer.getMarker(clusterItem).showInfoWindow();
+
+                Toast.makeText(context, address, Toast.LENGTH_SHORT).show()
 
                 false
             })
