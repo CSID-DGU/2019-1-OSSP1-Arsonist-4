@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.arsonist.here.Models.PhotoMetadataList.photoMetadataList
 import com.arsonist.here.PhotoMetadata
 import com.arsonist.here.R
 import com.arsonist.here.fragments.GalleryFragment
@@ -16,7 +17,6 @@ class PhotoRecyclerViewAdapter(val context: GalleryFragment, val itemClick: (Pho
     RecyclerView.Adapter<PhotoRecyclerViewAdapter.PhotoViewHolder>(),
     FastScroller.SectionIndexer {
 
-    private val photoMetadataList = mutableListOf<PhotoMetadata>()
 
     fun addPhoto(photoMetadata: PhotoMetadata) {
         photoMetadataList.add(photoMetadata)
@@ -24,13 +24,13 @@ class PhotoRecyclerViewAdapter(val context: GalleryFragment, val itemClick: (Pho
     }
 
     override fun getSectionText(position: Int): CharSequence {
-        var myDate = DateFormat.getDateInstance().format(photoMetadataList[position].dateTaken)
-        return myDate
+        return DateFormat.getDateInstance().format(photoMetadataList[position].dateTaken)
     }
 
     override fun getItemCount() = photoMetadataList.size
 
     override fun onBindViewHolder(viewHolder: PhotoViewHolder, position: Int) {
+
         photoMetadataList.getOrNull(position)?.let {
             viewHolder.loadView(it)
         }

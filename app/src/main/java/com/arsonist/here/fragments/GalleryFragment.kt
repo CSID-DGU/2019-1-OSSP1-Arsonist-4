@@ -10,19 +10,17 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arsonist.here.FetchPhotoAsyncTask
-import com.arsonist.here.PhotoMetadata
+import com.arsonist.here.Models.PhotoMetadataList.photoMetadataList
 import com.arsonist.here.R
 import com.arsonist.here.adapters.PhotoRecyclerViewAdapter
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.fragment_gallery.*
+
 
 class GalleryFragment : Fragment() {
 
     companion object {
         const val REQUEST_CODE_READ_EXTERNAL_STORAGE = 1
     }
-
-    private val photoMetadataList = mutableListOf<PhotoMetadata>()
 
     private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter(this) { photoMetadata ->
         // 눌렀을때 처리
@@ -35,7 +33,7 @@ class GalleryFragment : Fragment() {
     private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(activity, 5) }
 
     private fun startToFetchPhoto() {
-        val tempLocation: LatLng
+
         val cursor = context!!.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             arrayOf(

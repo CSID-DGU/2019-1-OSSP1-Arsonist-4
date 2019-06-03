@@ -1,8 +1,6 @@
 package com.arsonist.here
 
 import android.Manifest
-import android.app.Activity
-import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -13,9 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
-import androidx.viewpager.widget.PagerAdapter
-import com.arsonist.here.adapters.MainAdapter
 import com.arsonist.here.fragments.GalleryFragment
 import com.arsonist.here.fragments.MapFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -50,8 +45,6 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         } else {
-            // 사진을 불러오는 코드 작성
-            //startToFetchPhoto()
             view_pager.adapter = ViewPagerAdapter(supportFragmentManager,this)
         }
 
