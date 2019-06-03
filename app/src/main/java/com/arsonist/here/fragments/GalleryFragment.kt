@@ -3,6 +3,7 @@ package com.arsonist.here.fragments
 import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,12 +25,14 @@ class GalleryFragment : Fragment() {
 
     private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter(this) { photoMetadata ->
         // 눌렀을때 처리
+        Log.d("where", photoMetadata.location.latitude.toString())
         Toast.makeText(
             context,
             "${photoMetadata.location.latitude}, ${photoMetadata.location.longitude}",
             Toast.LENGTH_SHORT
         ).show()
     }
+
     private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(activity, 5) }
 
     private fun startToFetchPhoto() {
@@ -65,8 +68,8 @@ class GalleryFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return if (inflater != null) {
-            inflater.inflate(R.layout.fragment_gallery,container,false)
-        }else{
+            inflater.inflate(R.layout.fragment_gallery, container, false)
+        } else {
             super.onCreateView(inflater, container, savedInstanceState)
         }
     }
