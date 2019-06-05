@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Here</string>
-    <string name="gallery_fragment"> Gallery </string>
-    <string name="map_fragment"> Map </string>
+    <string name="gallery_fragment">Gallery</string>
+    <string name="map_fragment">Map</string>
 </resources>

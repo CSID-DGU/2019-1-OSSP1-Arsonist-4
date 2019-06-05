@@ -29,4 +29,8 @@ data class PhotoMetadata(
             )
         }
     }
+
+    override fun toString(): String {
+        return "PhotoMetadata(id=$id, data='$data', dateTaken=$dateTaken, location=$location)"
+    }
 }
