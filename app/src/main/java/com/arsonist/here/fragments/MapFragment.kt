@@ -102,7 +102,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         Log.e("photo size", photoList.size.toString())
         for (i in 0 until photoList.size) {
-            val contentURI = photoList[i].data
+            //val contentURI = photoList[i].data
             //val baseUri = Uri.parse("content://media/external/images/media")
 
             //val Uri = Uri.withAppendedPath(baseUri, "" + photoList[i].id);
@@ -166,7 +166,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     // you can avoid this by calling:
                     // renderer.getMarker(clusterItem).showInfoWindow();
 
-                    Log.e("test marker", address)
+                    Log.e("test marker2", address)
 
                     Toast.makeText(context, address, Toast.LENGTH_SHORT).show()
                 }

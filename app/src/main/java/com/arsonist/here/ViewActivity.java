@@ -1,7 +1,6 @@
 package com.arsonist.here;
 
 import android.os.Bundle;
-import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -10,6 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.arsonist.here.Models.PhotoMetadataList;
 import com.arsonist.here.fragments.ImageFragment;
 
+import java.text.DateFormat;
 import java.util.List;
 
 public class ViewActivity extends AppCompatActivity {
@@ -52,9 +52,7 @@ public class ViewActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             Fragment fragment = new ImageFragment();
             Bundle args = new Bundle();
-            args.putInt("ImagePos", cursor);
-            Log.d("check position", position+"");
-            args.putInt("ImagePosCurrent", position-1);
+            args.putInt("ImagePos", position);
             fragment.setArguments(args);
             return fragment;
         }
@@ -66,7 +64,7 @@ public class ViewActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            String title = "";
+            String title = DateFormat.getDateInstance().format(photoList.get(position).component3()) + "";
             return title;
         }
     }

@@ -26,10 +26,10 @@ class ImageFragment : Fragment() {
         super.setArguments(args)
 
         imagePos = args!!.getInt("ImagePos")
-        imagePosCurrent = args!!.getInt("ImagePosCurrent")
+        //imagePosCurrent = args!!.getInt("ImagePosCurrent")
 
-        if(imagePos != 0 && imagePos != imagePosCurrent)
-            imagePos += imagePosCurrent
+        //if(imagePos != 0 && imagePos != imagePosCurrent)
+        //    imagePos += imagePosCurrent
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
