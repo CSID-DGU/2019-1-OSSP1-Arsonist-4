@@ -26,10 +26,6 @@ class ImageFragment : Fragment() {
         super.setArguments(args)
 
         imagePos = args!!.getInt("ImagePos")
-        //imagePosCurrent = args!!.getInt("ImagePosCurrent")
-
-        //if(imagePos != 0 && imagePos != imagePosCurrent)
-        //    imagePos += imagePosCurrent
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,7 +40,8 @@ class ImageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Log.e("Image Data3", PhotoMetadataList.photoMetadataList.get(imagePos).toString())
-        System.out.print(PhotoMetadataList.photoMetadataList.get(imagePos).data)
+
+        // error check
         Glide.with(this)
             .load(PhotoMetadataList.photoMetadataList.get(imagePos).data)
             .into(image_view)

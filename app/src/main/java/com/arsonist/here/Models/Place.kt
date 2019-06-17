@@ -1,10 +1,9 @@
 package com.arsonist.here.Models
 
-import android.graphics.Bitmap
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 
-class Place(val lat: Double, val lng: Double, var name: String? = "", var url: Bitmap? = null) : ClusterItem {
+class Place(val lat: Double, val lng: Double, var name: String? = "", var Data: String? = null) : ClusterItem {
 
     fun getmPosition(): LatLng = mPosition
 
