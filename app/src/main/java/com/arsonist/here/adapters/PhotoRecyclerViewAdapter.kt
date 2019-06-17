@@ -47,6 +47,7 @@ class PhotoRecyclerViewAdapter(val context: GalleryFragment, val itemClick: (Pho
 
         private val photoView = itemView.photoView
 
+        // error check
         fun loadView(photoMetadata: PhotoMetadata) {
             Glide.with(itemView.context)
                 .load(photoMetadata.data)

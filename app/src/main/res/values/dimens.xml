@@ -7,4 +7,6 @@
     <dimen name="contacts_fastscroller_radius">48dp</dimen>
     <dimen name="contacts_popup_text_size">36sp</dimen>
     <dimen name="contacts_popup_size">96dp</dimen>
+    <dimen name="custom_photo_image">50dp</dimen>
+    <dimen name="custom_photo_padding">2dp</dimen>
 </resources>

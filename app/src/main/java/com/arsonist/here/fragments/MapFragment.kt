@@ -1,5 +1,10 @@
 package com.arsonist.here.fragments
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -7,24 +12,109 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.arsonist.here.Models.PhotoMetadataList
 import com.arsonist.here.Models.Place
+import com.arsonist.here.MultiDrawable
 import com.arsonist.here.R
-import com.arsonist.here.RenderClusterInfoWindow
 import com.arsonist.here.adapters.PopupAdapter
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
+import com.google.maps.android.clustering.view.DefaultClusterRenderer
+import com.google.maps.android.ui.IconGenerator
+import java.io.File
 import java.util.*
 
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var rootView: View
     private lateinit var mapView: MapView
-    private lateinit var mmap: GoogleMap
+    private lateinit var mMap: GoogleMap
 
+    private class PlaceRenderer internal constructor(
+        context: Context,
+        mMap: GoogleMap,
+        clusterManager: ClusterManager<Place>
+    ) : DefaultClusterRenderer<Place>(context, mMap, clusterManager) {
+
+        private val mIconGenerator = IconGenerator(context)
+        private val mClusterIconGenerator = IconGenerator(context)
+        private var mImageView: ImageView? = null
+        private var mClusterImageView: ImageView? = null
+        private var mDimension: Int = 0
+
+        init {
+            var multiProfile = LayoutInflater.from(context).inflate(R.layout.multi_photo, null)
+            mClusterIconGenerator.setContentView(multiProfile);
+            mClusterImageView = multiProfile.findViewById(R.id.imageMap) as ImageView
+            mImageView = ImageView(context)
+            mDimension = context.resources.getDimension(R.dimen.custom_photo_image).toInt()
+            mImageView!!.layoutParams = ViewGroup.LayoutParams(mDimension, mDimension)
+            var padding = context.resources.getDimension(R.dimen.custom_photo_padding).toInt()
+            mImageView!!.setPadding(padding, padding, padding, padding)
+            mIconGenerator.setContentView(mImageView);
+        }
+
+        override fun onClusterRendered(cluster: Cluster<Place>?, marker: Marker?) {
+            super.onClusterRendered(cluster, marker)
+        }
+
+        override fun onBeforeClusterItemRendered(item: Place?, markerOptions: MarkerOptions?) {
+            markerOptions!!.title("${item!!.lat}, ${item.lng}")
+            super.onBeforeClusterItemRendered(item, markerOptions)
+
+            val options = BitmapFactory.Options();
+            val file = File(item.Data)
+            val originalBm = BitmapFactory.decodeFile(file.absolutePath, options)
+            mImageView!!.setImageBitmap(originalBm)
+            var icon = mIconGenerator.makeIcon()
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon)).title(item.name)
+        }
+
+        override fun onBeforeClusterRendered(cluster: Cluster<Place>?, markerOptions: MarkerOptions?) {
+            super.onBeforeClusterRendered(cluster, markerOptions)
+            val profilePhotos = ArrayList<Drawable>(cluster!!.getSize())
+            val width = mDimension
+            val height = mDimension
+
+            for (p in cluster.getItems()) {
+                // Draw 4 at most.
+                if (profilePhotos.size == 1) break
+                val options = BitmapFactory.Options();
+                val file = File(p.Data)
+                val originalBm = BitmapFactory.decodeFile(file.absolutePath, options)
+                val drawable = bitmapToDrawable(originalBm)
+                drawable.setBounds(0, 0, width, height)
+                profilePhotos.add(drawable)
+            }
+            val multiDrawable = MultiDrawable(profilePhotos)
+            multiDrawable.setBounds(0, 0, width, height)
+
+            mClusterImageView!!.setImageDrawable(multiDrawable)
+            val icon = mClusterIconGenerator.makeIcon(cluster.getSize().toString())
+            if (markerOptions != null) {
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon))
+            }
+        }
+
+        override fun shouldRenderAsCluster(cluster: Cluster<Place>?): Boolean {
+            if (cluster != null) {
+                return cluster.size > 1
+            } else return super.shouldRenderAsCluster(cluster)
+        }
+
+        @Suppress("DEPRECATION")
+        private fun bitmapToDrawable(bitmap: Bitmap?): BitmapDrawable {
+            return BitmapDrawable(bitmap)
+        }
+    }
     private var mClusterManager: ClusterManager<Place>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,24 +190,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun addPlaceItems() {
         var photoList = PhotoMetadataList.photoMetadataList
 
-        Log.e("photo size", photoList.size.toString())
         for (i in 0 until photoList.size) {
-            //val contentURI = photoList[i].data
-            //val baseUri = Uri.parse("content://media/external/images/media")
-
-            //val Uri = Uri.withAppendedPath(baseUri, "" + photoList[i].id);
-            //Log.d("test", Uri.toString())
 
             if (photoList[i].location.latitude != 0.0 && photoList[i].location.longitude != 0.0) {
-
-                //val bitmap = MediaStore.Images.Media.getBitmap(context!!.contentResolver, Uri)
-
                 mClusterManager!!.addItem(
                     Place(
                         photoList[i].location.latitude,
                         photoList[i].location.longitude,
-                        ""//,
-                        //bitmap
+                        "",
+                        photoList[i].data
                     )
                 )
             }
@@ -129,8 +210,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         mClusterManager = ClusterManager(context, googleMap)
 
-        val renderer = RenderClusterInfoWindow(context!!, googleMap, this.mClusterManager!!)
+        //val renderer = RenderClusterInfoWindow(context!!, googleMap, this.mClusterManager!!)
 
+        val renderer = PlaceRenderer(context!!, googleMap, this.mClusterManager!!)
         mClusterManager!!.setRenderer(renderer)
 
 
@@ -165,7 +247,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     // if true, click handling stops here and do not show info view, do not move camera
                     // you can avoid this by calling:
                     // renderer.getMarker(clusterItem).showInfoWindow();
-
                     Log.e("test marker2", address)
 
                     Toast.makeText(context, address, Toast.LENGTH_SHORT).show()
