@@ -1,4 +1,4 @@
-# 2019-01 Open Source Project 01
+# 2019-01 Open Source Software Project 01
 # HERE
 <img src="https://user-images.githubusercontent.com/49481548/59783238-adfc8e80-92fa-11e9-9808-35cefa8ac863.png" width="200" height="200" />
 
