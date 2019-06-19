@@ -12,6 +12,7 @@
             app:bubbleColor="#00bb00"
             app:bubbleTextColor="#ffffff"
             app:handleColor="#999999"
+            app:bubbleSize="small"
     />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,25 +1,22 @@
 package com.arsonist.here.fragments
 
-import android.Manifest
-import android.app.Activity
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.os.Bundle
 import android.provider.BaseColumns
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arsonist.here.FetchPhotoAsyncTask
-import com.arsonist.here.PhotoMetadata
+import com.arsonist.here.Models.PhotoMetadataList
 import com.arsonist.here.R
+import com.arsonist.here.ViewActivity
 import com.arsonist.here.adapters.PhotoRecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_gallery.*
+
 
 class GalleryFragment : Fragment() {
 
@@ -27,12 +24,32 @@ class GalleryFragment : Fragment() {
         const val REQUEST_CODE_READ_EXTERNAL_STORAGE = 1
     }
 
-    private val photoMetadataList = mutableListOf<PhotoMetadata>()
+    private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter(this) { photoMetadata ->
+        // 눌렀을때 처리
+        Log.d("where", photoMetadata.location.latitude.toString())
 
-    private val mainRecyclerViewAdapter = PhotoRecyclerViewAdapter()
+        val myIntent = Intent(this.context, ViewActivity::class.java)
+        var pos = 0;
+        for (i in 0 until PhotoMetadataList.photoMetadataList.size) {
+            if (photoMetadata.id == PhotoMetadataList.photoMetadataList[i].id) {
+                pos = i;
+                break;
+            }
+        }
+        Log.d("position", pos.toString())
+        myIntent.putExtra("ImagePos", pos) // TODO id == list order ???
+        startActivity(myIntent)
+//        Toast.makeText(
+//            context,
+//            "${photoMetadata.location.latitude}, ${photoMetadata.location.longitude}",
+//            Toast.LENGTH_SHORT
+//        ).show()
+    }
+
     private val mainRecyclerViewLayoutManager by lazy { GridLayoutManager(activity, 5) }
 
     private fun startToFetchPhoto() {
+
         val cursor = context!!.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
@@ -50,7 +67,6 @@ class GalleryFragment : Fragment() {
 
         cursor?.let {
             val asyncTask = FetchPhotoAsyncTask(it) { photoMetadata ->
-                photoMetadataList.add(photoMetadata)
                 mainRecyclerViewAdapter.addPhoto(photoMetadata)
             }
             asyncTask.execute()
@@ -64,8 +80,8 @@ class GalleryFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return if (inflater != null) {
-            inflater.inflate(R.layout.fragment_gallery,container,false)
-        }else{
+            inflater.inflate(R.layout.fragment_gallery, container, false)
+        } else {
             super.onCreateView(inflater, container, savedInstanceState)
         }
     }

@@ -11,7 +11,7 @@ data class PhotoMetadata(
     val dateTaken: Long,
     val location: Location
 ) {
-    // companion : static object
+    // companion : static objec t
     companion object {
         fun photoMetadataFromCursor(cursor: Cursor): PhotoMetadata {
             val latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.LATITUDE))
@@ -28,5 +28,9 @@ data class PhotoMetadata(
                 location = location
             )
         }
+    }
+
+    override fun toString(): String {
+        return "PhotoMetadata(id=$id, data='$data', dateTaken=$dateTaken, location=$location)"
     }
 }
