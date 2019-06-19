@@ -2,6 +2,7 @@
 # HERE
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
+[![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
 <img src="https://user-images.githubusercontent.com/49481548/59783238-adfc8e80-92fa-11e9-9808-35cefa8ac863.png" width="200" height="200" />
 
