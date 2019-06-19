@@ -15,10 +15,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.arsonist.here.Models.PhotoMetadataList
 import com.arsonist.here.Models.Place
 import com.arsonist.here.MultiDrawable
 import com.arsonist.here.R
+import com.arsonist.here.ViewActivity
 import com.arsonist.here.adapters.PopupAdapter
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -86,6 +86,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             for (p in cluster.getItems()) {
                 // Draw 4 at most.
+
                 if (profilePhotos.size == 1) break
                 val options = BitmapFactory.Options();
                 val file = File(p.Data)
@@ -94,7 +95,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 drawable.setBounds(0, 0, width, height)
                 profilePhotos.add(drawable)
             }
+
             val multiDrawable = MultiDrawable(profilePhotos)
+
             multiDrawable.setBounds(0, 0, width, height)
 
             mClusterImageView!!.setImageDrawable(multiDrawable)
@@ -188,7 +191,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addPlaceItems() {
-        var photoList = PhotoMetadataList.photoMetadataList
+        var photoList = ViewActivity.getSortedMetaList()
 
         for (i in 0 until photoList.size) {
 
@@ -203,6 +206,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 )
             }
         }
+
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
